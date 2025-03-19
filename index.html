@@ -3,86 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HLR por Estado</title>
-
-    <!-- Estilo básico -->
+    <title>Mapa do Brasil - HLR das Operadoras</title>
     <style>
-        #mapa {
-            width: 600px;
-            height: 500px;
-            margin: 20px auto;
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        svg {
+            width: 90%;
+            max-width: 800px;
+            height: auto;
+        }
+        path {
+            fill: #cccccc;
+            stroke: #333;
+            stroke-width: 1px;
+            cursor: pointer;
+            transition: fill 0.3s;
+        }
+        path:hover {
+            fill: #ff9900;
         }
         #info {
-            text-align: center;
+            margin-top: 20px;
             font-size: 18px;
             font-weight: bold;
-            margin-top: 20px;
         }
     </style>
-
-    <!-- jQuery (necessário para jqvmap) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Biblioteca principal do jqvmap -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/jquery.vmap.min.js"></script>
-
-    <!-- Mapa do Brasil -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqvmap/1.5.1/maps/jquery.vmap.brazil.js"></script>
-
 </head>
 <body>
 
-    <h2 style="text-align: center;">Clique no estado para ver o HLR</h2>
-    <div id="mapa"></div>
-    <div id="info">Informação do HLR aparecerá aqui</div>
+    <h2>Mapa Interativo do Brasil - HLR das Operadoras</h2>
+
+    <svg viewBox="0 0 600 600">
+        <!-- Exemplo de estados -->
+        <path id="SP" d="M300 300 L350 320 L360 370 L320 390 L280 370 Z" onclick="mostrarHLR('SP')" />
+        <path id="RJ" d="M400 320 L420 340 L410 360 L380 350 Z" onclick="mostrarHLR('RJ')" />
+        <path id="MG" d="M320 270 L380 280 L390 310 L350 320 L300 300 Z" onclick="mostrarHLR('MG')" />
+        <path id="BA" d="M370 400 L420 420 L440 440 L400 460 L360 440 Z" onclick="mostrarHLR('BA')" />
+
+        <!-- Adicione aqui os demais estados com suas coordenadas -->
+    </svg>
+
+    <p id="info">Clique em um estado para ver o HLR</p>
 
     <script>
-        // Mapeamento de estados para HLR das operadoras
-        const hlrData = {
-            "ES": "TIM: 220 (ES/RJ)",
-            "RJ": "TIM: 220 (ES/RJ) | Claro: 27 (DDD 2X)",
-            "MG": "TIM: 230 | Claro: 37 (DDD 3X) | Vivo: 3X",
-            "AL": "TIM: 240 (AL/PB/PI/RN) | Vivo: 8X (PE, AL, PB, RN, CE e PI)",
-            "PB": "TIM: 240 (AL/PB/PI/RN) | Vivo: 8X (PE, AL, PB, RN, CE e PI)",
-            "PI": "TIM: 240 (AL/PB/PI/RN) | Vivo: 8X (PE, AL, PB, RN, CE e PI)",
-            "RN": "TIM: 240 (AL/PB/PI/RN) | Vivo: 8X (PE, AL, PB, RN, CE e PI)",
-            "BA": "TIM: 270 (BA/SE) | Claro: 76 (DDD 7X) | Vivo: 7X",
-            "SE": "TIM: 270 (BA/SE) | Vivo: 7X",
-            "CE": "TIM: 280 (CE/PE) | Vivo: 8X",
-            "PE": "TIM: 280 (CE/PE) | Vivo: 8X",
-            "MA": "TIM: 290 (AP/MA/PA/RR) | Claro: 9 (DDD 98,99) | Vivo: 9X",
-            "PA": "TIM: 290 (AP/MA/PA/RR) | Claro: 90 (DDD 91,93,94,96)",
-            "RR": "TIM: 290 (AP/MA/PA/RR) | Claro: 8 (DDD 92,95,97)",
-            "AP": "TIM: 290 (AP/MA/PA/RR) | Claro: 90 (DDD 91,93,94,96)",
-            "AM": "TIM: 292 | Claro: 8 (DDD 92,95,97)",
-            "SP": "TIM: 311 | Claro: 1 e 16 (DDD 11-19) | Vivo: 1X",
-            "PR": "TIM: 440 (PR/SC) | Claro: 46 (DDD 4X) | Vivo: 4X",
-            "SC": "TIM: 440 (PR/SC) | Vivo: 4X",
-            "RS": "TIM: 450 | Claro: 56 (DDD 5X) | Vivo: 5X",
-            "AC": "TIM: 460 (AC/DF/GO/MS/MT/RO/TO) | Vivo: 6X",
-            "DF": "TIM: 460 (AC/DF/GO/MS/MT/RO/TO) | Vivo: 6X",
-            "GO": "TIM: 460 (AC/DF/GO/MS/MT/RO/TO) | Claro: 66 (DDD 6X) | Vivo: 6X",
-            "MS": "TIM: 460 (AC/DF/GO/MS/MT/RO/TO) | Vivo: 6X",
-            "MT": "TIM: 460 (AC/DF/GO/MS/MT/RO/TO) | Vivo: 6X",
-            "RO": "TIM: 460 (AC/DF/GO/MS/MT/RO/TO) | Vivo: 6X",
-            "TO": "TIM: 460 (AC/DF/GO/MS/MT/RO/TO) | Vivo: 6X"
-        };
+        function mostrarHLR(estado) {
+            let hlrInfo = {
+                "SP": "📌 HLR TIM: 311\n📌 HLR CLARO: 1, 16 (DDD 11 ao 19)\n📌 HLR VIVO: CHIP USADO 1X",
+                "RJ": "📌 HLR TIM: 220\n📌 HLR CLARO: 27 (DDD 2X)\n📌 HLR VIVO: CHIP USADO 2X",
+                "MG": "📌 HLR TIM: 230\n📌 HLR CLARO: 37 (DDD 3X)\n📌 HLR VIVO: CHIP USADO 3X",
+                "BA": "📌 HLR TIM: 270\n📌 HLR CLARO: 76 (DDD 7X)\n📌 HLR VIVO: CHIP USADO 7X"
+            };
 
-        $(document).ready(function() {
-            $('#mapa').vectorMap({
-                map: 'brazil',
-                backgroundColor: '#f0f0f0',
-                borderColor: '#000',
-                enableZoom: true,
-                showTooltip: true,
-                onRegionClick: function(event, code, region) {
-                    let info = hlrData[code] || "Nenhuma informação disponível para este estado.";
-                    $('#info').html(`<strong>${region}</strong>: ${info}`);
-                }
-            });
-        });
+            document.getElementById("info").innerText = hlrInfo[estado] || "HLR não encontrado";
+        }
     </script>
 
 </body>
 </html>
+
 
