@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -136,11 +137,14 @@
     document.querySelectorAll(".music").forEach((musicBlock, idx) => {
   const stars = musicBlock.querySelector(".stars");
 
-  // Clique fora das estrelas (no bloco inteiro)
+  // Clique no bloco da música (fora das estrelas)
   musicBlock.addEventListener("click", function(e) {
-    if (!e.target.closest(".stars") && !avaliacoes[idx]) {
-      musicBlock.style.background = "#CC7634";
-      musicBlock.style.color = "#fff";
+    if (!e.target.closest(".stars")) {
+      // Só muda para laranja se ainda não foi avaliado
+      if (!avaliacoes[idx]) {
+        musicBlock.style.background = "#CC7634";
+        musicBlock.style.color = "#fff";
+      }
     }
   });
 
@@ -153,10 +157,10 @@
       const spans = stars.querySelectorAll("span");
       spans.forEach((s, i) => {
         s.classList.toggle("selected", i < star);
-        s.style.color = ""; // padrão
+        s.style.color = ""; // mantém o dourado padrão
       });
 
-      // Aplica a cor final conforme regra
+      // Aplica cor final conforme a regra
       musicBlock.style.background = idx < 13 ? "#CB0A0A" : "#40A7BD";
       musicBlock.style.color = "#fff";
     }
