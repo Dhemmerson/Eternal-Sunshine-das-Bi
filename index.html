@@ -1,66 +1,117 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa do Brasil - HLR das Operadoras</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-        svg {
-            width: 90%;
-            max-width: 800px;
-            height: auto;
-        }
-        path {
-            fill: #cccccc;
-            stroke: #333;
-            stroke-width: 1px;
-            cursor: pointer;
-            transition: fill 0.3s;
-        }
-        path:hover {
-            fill: #ff9900;
-        }
-        #info {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Ranking de Músicas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .music {
+      margin-bottom: 10px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    }
+
+    .stars span {
+      cursor: pointer;
+      font-size: 20px;
+      color: gray;
+    }
+
+    .stars span.selected {
+      color: gold;
+    }
+
+    #resultado {
+      margin-top: 30px;
+      background-color: #e0ffe0;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 20px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
 
-    <h2>Mapa Interativo do Brasil - HLR das Operadoras</h2>
+  <h1>Rankeie as Músicas</h1>
 
-    <svg viewBox="0 0 600 600">
-        <!-- Exemplo de estados -->
-        <path id="SP" d="M300 300 L350 320 L360 370 L320 390 L280 370 Z" onclick="mostrarHLR('SP')" />
-        <path id="RJ" d="M400 320 L420 340 L410 360 L380 350 Z" onclick="mostrarHLR('RJ')" />
-        <path id="MG" d="M320 270 L380 280 L390 310 L350 320 L300 300 Z" onclick="mostrarHLR('MG')" />
-        <path id="BA" d="M370 400 L420 420 L440 440 L400 460 L360 440 Z" onclick="mostrarHLR('BA')" />
+  <div id="musicas"></div>
 
-        <!-- Adicione aqui os demais estados com suas coordenadas -->
-    </svg>
+  <button onclick="enviarVotacao()">Enviar Votação</button>
 
-    <p id="info">Clique em um estado para ver o HLR</p>
+  <div id="resultado"></div>
 
-    <script>
-        function mostrarHLR(estado) {
-            let hlrInfo = {
-                "SP": "📌 HLR TIM: 311\n📌 HLR CLARO: 1, 16 (DDD 11 ao 19)\n📌 HLR VIVO: CHIP USADO 1X",
-                "RJ": "📌 HLR TIM: 220\n📌 HLR CLARO: 27 (DDD 2X)\n📌 HLR VIVO: CHIP USADO 2X",
-                "MG": "📌 HLR TIM: 230\n📌 HLR CLARO: 37 (DDD 3X)\n📌 HLR VIVO: CHIP USADO 3X",
-                "BA": "📌 HLR TIM: 270\n📌 HLR CLARO: 76 (DDD 7X)\n📌 HLR VIVO: CHIP USADO 7X"
-            };
+  <script>
+    const musicas = [
+      "Música 1", "Música 2", "Música 3", "Música 4", "Música 5",
+      "Música 6", "Música 7", "Música 8", "Música 9", "Música 10",
+      "Música 11", "Música 12", "Música 13", "Música 14", "Música 15",
+      "Música 16", "Música 17", "Música 18", "Música 19", "Música 20",
+      "Música 21", "Música 22"
+    ];
 
-            document.getElementById("info").innerText = hlrInfo[estado] || "HLR não encontrado";
+    const avaliacoes = {};
+
+    const container = document.getElementById("musicas");
+
+    musicas.forEach((nome, index) => {
+      const div = document.createElement("div");
+      div.className = "music";
+      div.innerHTML = `<strong>${nome}</strong>
+        <div class="stars" data-id="${index}">` +
+        [1,2,3,4,5].map(i => `<span data-star="${i}">&#9733;</span>`).join("") +
+        `</div>`;
+      container.appendChild(div);
+      avaliacoes[index] = 0;
+    });
+
+    document.querySelectorAll(".stars").forEach(starBlock => {
+      starBlock.addEventListener("click", function(e) {
+        if (e.target.tagName === "SPAN") {
+          const star = parseInt(e.target.dataset.star);
+          const id = this.dataset.id;
+          avaliacoes[id] = star;
+
+          const spans = this.querySelectorAll("span");
+          spans.forEach((s, i) => {
+            s.classList.toggle("selected", i < star);
+          });
         }
-    </script>
+      });
+    });
+
+    function enviarVotacao() {
+      const resultado = Object.entries(avaliacoes)
+        .map(([id, score]) => ({ musica: musicas[id], estrelas: score }))
+        .sort((a, b) => b.estrelas - a.estrelas)
+        .slice(0, 3);
+
+      const divResultado = document.getElementById("resultado");
+      divResultado.innerHTML = "<h2>Top 3 Músicas:</h2>" + resultado.map((m, i) =>
+        `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("");
+      divResultado.style.display = "block";
+    }
+  </script>
 
 </body>
 </html>
-
-
