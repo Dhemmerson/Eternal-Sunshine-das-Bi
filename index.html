@@ -134,19 +134,26 @@
     });
 
     document.querySelectorAll(".stars").forEach(starBlock => {
-      starBlock.addEventListener("click", function(e) {
-        if (e.target.tagName === "SPAN") {
-          const star = parseInt(e.target.dataset.star);
-          const id = this.dataset.id;
-          avaliacoes[id] = star;
+  starBlock.addEventListener("click", function(e) {
+    if (e.target.tagName === "SPAN") {
+      const star = parseInt(e.target.dataset.star);
+      const id = this.dataset.id;
+      avaliacoes[id] = star;
 
-          const spans = this.querySelectorAll("span");
-          spans.forEach((s, i) => {
-            s.classList.toggle("selected", i < star);
-          });
-        }
+      // Destaca estrelas com classe 'selected' sem alterar a cor delas
+      const spans = this.querySelectorAll("span");
+      spans.forEach((s, i) => {
+        s.classList.toggle("selected", i < star);
+        s.style.color = ""; // Remove cores personalizadas
       });
-    });
+
+      // Muda apenas o fundo da música
+      const musicBlock = this.parentElement;
+      musicBlock.style.background = id < 13 ? "#CB0A0A" : "#40A7BD";
+      musicBlock.style.color = "#fff"; // texto branco para contraste
+    }
+  });
+});
 
     function enviarVotacao() {
       const resultado = Object.entries(avaliacoes)
