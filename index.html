@@ -140,9 +140,8 @@
   // Clique no bloco da música (fora das estrelas)
   musicBlock.addEventListener("click", function(e) {
     if (!e.target.closest(".stars")) {
-      // Só muda para laranja se ainda não foi avaliado
-      if (!avaliacoes[idx]) {
-        musicBlock.style.background = "#CC7634";
+      if (!avaliacoes.hasOwnProperty(idx)) {
+        musicBlock.style.background = "#CC7634"; // Laranja
         musicBlock.style.color = "#fff";
       }
     }
@@ -154,14 +153,15 @@
       const star = parseInt(e.target.dataset.star);
       avaliacoes[idx] = star;
 
+      // Atualiza estrelas visuais
       const spans = stars.querySelectorAll("span");
       spans.forEach((s, i) => {
         s.classList.toggle("selected", i < star);
-        s.style.color = ""; // mantém o dourado padrão
+        s.style.color = ""; // Mantém cor padrão
       });
 
-      // Aplica cor final conforme a regra
-      musicBlock.style.background = idx < 13 ? "#CB0A0A" : "#40A7BD";
+      // Define cor final da música
+      musicBlock.style.background = idx < 13 ? "#CB0A0A" : "#40A7BD"; // Vermelho ou Azul
       musicBlock.style.color = "#fff";
     }
   });
