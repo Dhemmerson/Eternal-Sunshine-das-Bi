@@ -4,62 +4,109 @@
   <meta charset="UTF-8">
   <title>Ranking de Músicas</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f5f5f5;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('sua-imagem.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      backdrop-filter: blur(4px);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 15px;
     }
 
     h1 {
       text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 30px;
     }
 
     .music {
-      margin-bottom: 10px;
-      background: #fff;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      transition: background 0.3s;
+    }
+
+    .music:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .stars {
+      margin-top: 8px;
     }
 
     .stars span {
+      font-size: 26px;
       cursor: pointer;
-      font-size: 20px;
-      color: gray;
+      color: #ccc;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .stars span:hover,
+    .stars span:hover ~ span {
+      color: #fff;
+      transform: scale(1.2);
     }
 
     .stars span.selected {
-      color: gold;
+      color: #ffcc00;
+    }
+
+    button {
+      display: block;
+      margin: 30px auto 10px;
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #ff4d4d;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #e60000;
     }
 
     #resultado {
       margin-top: 30px;
-      background-color: #e0ffe0;
       padding: 20px;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
       display: none;
     }
 
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 20px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      cursor: pointer;
+    @media (max-width: 600px) {
+      .stars span {
+        font-size: 22px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
     }
   </style>
 </head>
 <body>
-
-  <h1>Rankeie as Músicas</h1>
-
-  <div id="musicas"></div>
-
-  <button onclick="enviarVotacao()">Enviar Votação</button>
-
-  <div id="resultado"></div>
+  <div class="container">
+    <h1>Rankeie as Músicas</h1>
+    <div id="musicas"></div>
+    <button onclick="enviarVotacao()">Enviar Votação</button>
+    <div id="resultado"></div>
+  </div>
 
   <script>
     const musicas = [
@@ -110,8 +157,8 @@
       divResultado.innerHTML = "<h2>Top 3 Músicas:</h2>" + resultado.map((m, i) =>
         `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("");
       divResultado.style.display = "block";
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
   </script>
-
 </body>
 </html>
