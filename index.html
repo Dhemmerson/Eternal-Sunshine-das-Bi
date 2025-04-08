@@ -133,29 +133,31 @@
       avaliacoes[index] = 0;
     });
 
-    document.querySelectorAll(".stars").forEach(starBlock => {
-  // Clique geral: fundo laranja
-  starBlock.parentElement.addEventListener("click", function () {
-    this.style.background = "#CC7634";
-    this.style.color = "#fff";
+    document.querySelectorAll(".music").forEach((musicBlock, idx) => {
+  const stars = musicBlock.querySelector(".stars");
+
+  // Clique fora das estrelas (no bloco inteiro)
+  musicBlock.addEventListener("click", function(e) {
+    if (!e.target.closest(".stars") && !avaliacoes[idx]) {
+      musicBlock.style.background = "#CC7634";
+      musicBlock.style.color = "#fff";
+    }
   });
 
-  // Clique nas estrelas: define avaliação + cor final
-  starBlock.addEventListener("click", function(e) {
+  // Clique nas estrelas
+  stars.addEventListener("click", function(e) {
     if (e.target.tagName === "SPAN") {
       const star = parseInt(e.target.dataset.star);
-      const id = this.dataset.id;
-      avaliacoes[id] = star;
+      avaliacoes[idx] = star;
 
-      const spans = this.querySelectorAll("span");
+      const spans = stars.querySelectorAll("span");
       spans.forEach((s, i) => {
         s.classList.toggle("selected", i < star);
-        s.style.color = ""; // mantém padrão das estrelas
+        s.style.color = ""; // padrão
       });
 
-      // Ao selecionar estrela: muda fundo conforme regra
-      const musicBlock = this.parentElement;
-      musicBlock.style.background = id < 13 ? "#CB0A0A" : "#40A7BD";
+      // Aplica a cor final conforme regra
+      musicBlock.style.background = idx < 13 ? "#CB0A0A" : "#40A7BD";
       musicBlock.style.color = "#fff";
     }
   });
