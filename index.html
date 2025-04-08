@@ -134,23 +134,29 @@
     });
 
     document.querySelectorAll(".stars").forEach(starBlock => {
+  // Clique geral: fundo laranja
+  starBlock.parentElement.addEventListener("click", function () {
+    this.style.background = "#CC7634";
+    this.style.color = "#fff";
+  });
+
+  // Clique nas estrelas: define avaliação + cor final
   starBlock.addEventListener("click", function(e) {
     if (e.target.tagName === "SPAN") {
       const star = parseInt(e.target.dataset.star);
       const id = this.dataset.id;
       avaliacoes[id] = star;
 
-      // Destaca estrelas com classe 'selected' sem alterar a cor delas
       const spans = this.querySelectorAll("span");
       spans.forEach((s, i) => {
         s.classList.toggle("selected", i < star);
-        s.style.color = ""; // Remove cores personalizadas
+        s.style.color = ""; // mantém padrão das estrelas
       });
 
-      // Muda apenas o fundo da música
+      // Ao selecionar estrela: muda fundo conforme regra
       const musicBlock = this.parentElement;
       musicBlock.style.background = id < 13 ? "#CB0A0A" : "#40A7BD";
-      musicBlock.style.color = "#fff"; // texto branco para contraste
+      musicBlock.style.color = "#fff";
     }
   });
 });
