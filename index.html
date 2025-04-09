@@ -85,28 +85,32 @@
     }
 
     #resultado {
-  margin-top: 30px;
-  padding: 30px 20px;
-  border-radius: 20px;
-  display: none;
-  background: url('https://i.postimg.cc/3RsPrDjg/Eternal-Sunshine-Story-2.png') no-repeat center center;
-  background-size: cover;
-  color: white;
-  text-align: center;
-  font-size: 18px;
-  width: 300px;
-  height: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+      margin-top: 30px;
+      padding: 30px 20px;
+      border-radius: 20px;
+      display: none;
+      background: url('https://i.postimg.cc/3RsPrDjg/Eternal-Sunshine-Story-2.png') no-repeat center center;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      font-size: 18px;
+      width: 300px;
+      height: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
 
     #resultado h2 {
-      font-size: 1.8em;
+      font-size: 1.6em;
       margin-bottom: 20px;
+      background-color: rgba(255, 165, 0, 0.8);
+      padding: 8px 16px;
+      border-radius: 12px;
+      color: #fff;
     }
 
     @media (max-width: 600px) {
@@ -188,10 +192,10 @@
         .slice(0, 3);
 
       const divResultado = document.getElementById("resultado");
-      divResultado.innerHTML =
-        <h2>Meu Top 3</h2>
+      divResultado.innerHTML = `
+        <h2>Eternal Sunshine Night✨</h2>
         ${resultado.map((m, i) =>
-        `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("")}
+          `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("")}
       `;
       divResultado.style.display = "flex";
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -241,4 +245,3 @@
   </script>
 </body>
 </html>
-
