@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Eternal Sunshine Night✨</title>
   <style>
@@ -83,23 +84,13 @@
       background: #e60000;
     }
 
-    #resultado {
+    #resultado-captura {
       margin-top: 30px;
       padding: 20px;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.85);
       border-radius: 10px;
       display: none;
-    }
-
-    #baixarImagem {
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
-    }
-
-    #baixarImagem.mostrar {
-      opacity: 1;
-      pointer-events: auto;
+      color: white;
     }
 
     @media (max-width: 600px) {
@@ -118,8 +109,12 @@
     <h1>Eternal Sunshine Night✨</h1>
     <div id="musicas"></div>
     <button onclick="enviarVotacao()">Enviar Votação</button>
-    <div id="resultado"></div>
-    <button id="baixarImagem">Salvar como Imagem</button>
+
+    <div id="resultado-captura">
+      <div id="resultado"></div>
+    </div>
+
+    <button id="baixarImagem" style="display:none;">Salvar como Imagem</button>
   </div>
 
   <script>
@@ -139,7 +134,7 @@
       div.className = "music";
       div.innerHTML = `<strong>${nome}</strong>
         <div class="stars" data-id="${index}">` +
-        [1, 2, 3, 4, 5].map(i => `<span data-star="${i}">&#9733;</span>`).join("") +
+        [1,2,3,4,5].map(i => `<span data-star="${i}">&#9733;</span>`).join("") +
         `</div>`;
       container.appendChild(div);
       avaliacoes[index] = 0;
@@ -148,7 +143,7 @@
     document.querySelectorAll(".music").forEach((musicBlock, idx) => {
       const stars = musicBlock.querySelector(".stars");
 
-      musicBlock.addEventListener("click", function (e) {
+      musicBlock.addEventListener("click", function(e) {
         if (!e.target.closest(".stars")) {
           if (!avaliacoes.hasOwnProperty(idx)) {
             musicBlock.style.background = "#CC7634";
@@ -157,7 +152,7 @@
         }
       });
 
-      stars.addEventListener("click", function (e) {
+      stars.addEventListener("click", function(e) {
         if (e.target.tagName === "SPAN") {
           const star = parseInt(e.target.dataset.star);
           avaliacoes[idx] = star;
@@ -176,38 +171,56 @@
 
     function enviarVotacao() {
       const resultado = Object.entries(avaliacoes)
-        .filter(([_, score]) => score > 0)
         .map(([id, score]) => ({ musica: musicas[id], estrelas: score }))
         .sort((a, b) => b.estrelas - a.estrelas)
         .slice(0, 3);
 
       const divResultado = document.getElementById("resultado");
+      divResultado.innerHTML = "<h2>Top 3 Músicas:</h2>" + resultado.map((m, i) =>
+        `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("");
 
-      if (resultado.length === 0) {
-        divResultado.innerHTML = "<p>Nenhuma música foi avaliada!</p>";
-      } else {
-        divResultado.innerHTML = "<h2>Top 3 Músicas:</h2>" + resultado.map((m, i) =>
-          `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("");
-      }
+      document.getElementById("resultado-captura").style.display = "block";
+      document.getElementById("baixarImagem").style.display = "block";
 
-      divResultado.style.display = "block";
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 
-      const botao = document.getElementById("baixarImagem");
-      botao.classList.add("mostrar");
-      console.log("Exibindo botão de download");
+      soltarConfete();
     }
 
     document.getElementById("baixarImagem").addEventListener("click", function () {
-      const resultado = document.getElementById("resultado");
-      html2canvas(resultado).then(canvas => {
+      html2canvas(document.getElementById("resultado-captura")).then(canvas => {
         const link = document.createElement("a");
         link.download = "resultado-votacao.png";
         link.href = canvas.toDataURL();
         link.click();
       });
     });
+
+    function soltarConfete() {
+  const duration = 3000; // 3 segundos
+  const end = Date.now() + duration;
+
+  (function frame() {
+    confetti({
+      particleCount: 5,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: ["#40A7BD", "#CC7634", "#CB0A0A"]
+    });
+    confetti({
+      particleCount: 5,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: ["#40A7BD", "#CC7634", "#CB0A0A"]
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
+}
   </script>
 </body>
 </html>
-
