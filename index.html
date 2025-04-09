@@ -84,13 +84,29 @@
       background: #e60000;
     }
 
-    #resultado-captura {
+    #resultado {
       margin-top: 30px;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.85);
-      border-radius: 10px;
+      padding: 30px 20px;
+      border-radius: 20px;
       display: none;
+      background: #CC7634; /* fundo laranja */
       color: white;
+      text-align: center;
+      font-size: 18px;
+      width: 300px;
+      height: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    }
+
+    #resultado h2 {
+      font-size: 1.8em;
+      margin-bottom: 20px;
     }
 
     @media (max-width: 600px) {
@@ -109,11 +125,7 @@
     <h1>Eternal Sunshine Night✨</h1>
     <div id="musicas"></div>
     <button onclick="enviarVotacao()">Enviar Votação</button>
-
-    <div id="resultado-captura">
-      <div id="resultado"></div>
-    </div>
-
+    <div id="resultado"></div>
     <button id="baixarImagem" style="display:none;">Salvar como Imagem</button>
   </div>
 
@@ -176,51 +188,57 @@
         .slice(0, 3);
 
       const divResultado = document.getElementById("resultado");
-      divResultado.innerHTML = "<h2>Top 3 Músicas:</h2>" + resultado.map((m, i) =>
-        `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("");
-
-      document.getElementById("resultado-captura").style.display = "block";
-      document.getElementById("baixarImagem").style.display = "block";
-
+      divResultado.innerHTML = `
+        <h2>Eternal Sunshine Night✨</h2>
+        ${resultado.map((m, i) =>
+        `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("")}
+      `;
+      divResultado.style.display = "flex";
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 
+      document.getElementById("baixarImagem").style.display = "block";
       soltarConfete();
     }
 
+    function soltarConfete() {
+      const duration = 3000;
+      const end = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 7,
+          angle: 60,
+          spread: 70,
+          origin: { x: 0 },
+          colors: ["#40A7BD", "#CC7634", "#CB0A0A"]
+        });
+        confetti({
+          particleCount: 7,
+          angle: 120,
+          spread: 70,
+          origin: { x: 1 },
+          colors: ["#40A7BD", "#CC7634", "#CB0A0A"]
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    }
+
     document.getElementById("baixarImagem").addEventListener("click", function () {
-      html2canvas(document.getElementById("resultado-captura")).then(canvas => {
+      const resultado = document.getElementById("resultado");
+      html2canvas(resultado, {
+        useCORS: true,
+        backgroundColor: null
+      }).then(canvas => {
         const link = document.createElement("a");
         link.download = "resultado-votacao.png";
         link.href = canvas.toDataURL();
         link.click();
       });
     });
-
-    function soltarConfete() {
-  const duration = 3000; // 3 segundos
-  const end = Date.now() + duration;
-
-  (function frame() {
-    confetti({
-      particleCount: 5,
-      angle: 60,
-      spread: 55,
-      origin: { x: 0 },
-      colors: ["#40A7BD", "#CC7634", "#CB0A0A"]
-    });
-    confetti({
-      particleCount: 5,
-      angle: 120,
-      spread: 55,
-      origin: { x: 1 },
-      colors: ["#40A7BD", "#CC7634", "#CB0A0A"]
-    });
-
-    if (Date.now() < end) {
-      requestAnimationFrame(frame);
-    }
-  })();
-}
   </script>
 </body>
 </html>
+
