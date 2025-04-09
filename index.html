@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -92,6 +91,17 @@
       display: none;
     }
 
+    #baixarImagem {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    #baixarImagem.mostrar {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     @media (max-width: 600px) {
       .stars span {
         font-size: 22px;
@@ -109,7 +119,7 @@
     <div id="musicas"></div>
     <button onclick="enviarVotacao()">Enviar Votação</button>
     <div id="resultado"></div>
-    <button id="baixarImagem" style="display:none;">Salvar como Imagem</button>
+    <button id="baixarImagem">Salvar como Imagem</button>
   </div>
 
   <script>
@@ -122,7 +132,6 @@
     ];
 
     const avaliacoes = {};
-
     const container = document.getElementById("musicas");
 
     musicas.forEach((nome, index) => {
@@ -130,70 +139,75 @@
       div.className = "music";
       div.innerHTML = `<strong>${nome}</strong>
         <div class="stars" data-id="${index}">` +
-        [1,2,3,4,5].map(i => `<span data-star="${i}">&#9733;</span>`).join("") +
+        [1, 2, 3, 4, 5].map(i => `<span data-star="${i}">&#9733;</span>`).join("") +
         `</div>`;
       container.appendChild(div);
       avaliacoes[index] = 0;
     });
 
     document.querySelectorAll(".music").forEach((musicBlock, idx) => {
-  const stars = musicBlock.querySelector(".stars");
+      const stars = musicBlock.querySelector(".stars");
 
-  // Clique no bloco da música (fora das estrelas)
-  musicBlock.addEventListener("click", function(e) {
-    if (!e.target.closest(".stars")) {
-      if (!avaliacoes.hasOwnProperty(idx)) {
-        musicBlock.style.background = "#CC7634"; // Laranja
-        musicBlock.style.color = "#fff";
-      }
-    }
-  });
-
-  // Clique nas estrelas
-  stars.addEventListener("click", function(e) {
-    if (e.target.tagName === "SPAN") {
-      const star = parseInt(e.target.dataset.star);
-      avaliacoes[idx] = star;
-
-      // Atualiza estrelas visuais
-      const spans = stars.querySelectorAll("span");
-      spans.forEach((s, i) => {
-        s.classList.toggle("selected", i < star);
-        s.style.color = ""; // Mantém cor padrão
+      musicBlock.addEventListener("click", function (e) {
+        if (!e.target.closest(".stars")) {
+          if (!avaliacoes.hasOwnProperty(idx)) {
+            musicBlock.style.background = "#CC7634";
+            musicBlock.style.color = "#fff";
+          }
+        }
       });
 
-      // Define cor final da música
-      musicBlock.style.background = idx < 13 ? "#CB0A0A" : "#40A7BD"; // Vermelho ou Azul
-      musicBlock.style.color = "#fff";
-    }
-  });
-});
+      stars.addEventListener("click", function (e) {
+        if (e.target.tagName === "SPAN") {
+          const star = parseInt(e.target.dataset.star);
+          avaliacoes[idx] = star;
+
+          const spans = stars.querySelectorAll("span");
+          spans.forEach((s, i) => {
+            s.classList.toggle("selected", i < star);
+            s.style.color = "";
+          });
+
+          musicBlock.style.background = idx < 13 ? "#CB0A0A" : "#40A7BD";
+          musicBlock.style.color = "#fff";
+        }
+      });
+    });
 
     function enviarVotacao() {
-  const resultado = Object.entries(avaliacoes)
-    .map(([id, score]) => ({ musica: musicas[id], estrelas: score }))
-    .sort((a, b) => b.estrelas - a.estrelas)
-    .slice(0, 3);
+      const resultado = Object.entries(avaliacoes)
+        .filter(([_, score]) => score > 0)
+        .map(([id, score]) => ({ musica: musicas[id], estrelas: score }))
+        .sort((a, b) => b.estrelas - a.estrelas)
+        .slice(0, 3);
 
-  const divResultado = document.getElementById("resultado");
-  divResultado.innerHTML = "<h2>Top 3 Músicas:</h2>" + resultado.map((m, i) =>
-    `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("");
-  divResultado.style.display = "block";
-  window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      const divResultado = document.getElementById("resultado");
 
-  // Mostra botão para salvar imagem
-  document.getElementById("baixarImagem").style.display = "block";
-}
+      if (resultado.length === 0) {
+        divResultado.innerHTML = "<p>Nenhuma música foi avaliada!</p>";
+      } else {
+        divResultado.innerHTML = "<h2>Top 3 Músicas:</h2>" + resultado.map((m, i) =>
+          `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("");
+      }
+
+      divResultado.style.display = "block";
+      window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+
+      const botao = document.getElementById("baixarImagem");
+      botao.classList.add("mostrar");
+      console.log("Exibindo botão de download");
+    }
 
     document.getElementById("baixarImagem").addEventListener("click", function () {
-  const resultado = document.getElementById("resultado");
-  html2canvas(resultado).then(canvas => {
-    const link = document.createElement("a");
-    link.download = "resultado-votacao.png";
-    link.href = canvas.toDataURL();
-    link.click();
-  });
-});
+      const resultado = document.getElementById("resultado");
+      html2canvas(resultado).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "resultado-votacao.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    });
   </script>
 </body>
 </html>
+
