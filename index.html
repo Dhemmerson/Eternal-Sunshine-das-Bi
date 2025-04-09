@@ -194,7 +194,7 @@
       const divResultado = document.getElementById("resultado");
       divResultado.innerHTML = `
         ${resultado.map((m, i) =>
-          `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("")}
+          `<p><strong>${i + 1}º:</strong> ${m.musica}</p>`).join("")}
       `;
       divResultado.style.display = "flex";
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
@@ -204,30 +204,30 @@
     }
 
     function soltarConfete() {
-      const duration = 3000;
-      const end = Date.now() + duration;
+  const duration = 5000;
+  const animationEnd = Date.now() + duration;
+  const defaults = {
+    startVelocity: 20,
+    spread: 360,
+    ticks: 60,
+    zIndex: 1000
+  };
 
-      (function frame() {
-        confetti({
-          particleCount: 7,
-          angle: 60,
-          spread: 70,
-          origin: { x: 0 },
-          colors: ["#40A7BD", "#CC7634", "#CB0A0A"]
-        });
-        confetti({
-          particleCount: 7,
-          angle: 120,
-          spread: 70,
-          origin: { x: 1 },
-          colors: ["#40A7BD", "#CC7634", "#CB0A0A"]
-        });
+  const interval = setInterval(() => {
+    const timeLeft = animationEnd - Date.now();
 
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      })();
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
     }
+
+    const particleCount = 10 * (timeLeft / duration);
+    confetti(Object.assign({}, defaults, {
+      particleCount,
+      origin: { x: Math.random(), y: Math.random() - 0.2 },
+      colors: ["#CB0A0A", "#40A7BD", "#CC7634"]
+    }));
+  }, 250);
+}
 
     document.getElementById("baixarImagem").addEventListener("click", function () {
       const resultado = document.getElementById("resultado");
