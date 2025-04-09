@@ -89,7 +89,7 @@
   padding: 30px 20px;
   border-radius: 20px;
   display: none;
-  background: url('https://i.postimg.cc/DwRZQS5N/Eternal-Sunshine-Story-1.png') no-repeat center center;
+  background: url('https://i.postimg.cc/3RsPrDjg/Eternal-Sunshine-Story-2.png') no-repeat center center;
   background-size: cover;
   color: white;
   text-align: center;
@@ -188,9 +188,8 @@
         .slice(0, 3);
 
       const divResultado = document.getElementById("resultado");
-      divResultado.innerHTML = `
-        <h2>Eternal Sunshine Night✨</h2>
-        <h2>Meu top 3</h2>
+      divResultado.innerHTML =
+        <h2>Meu Top 3</h2>
         ${resultado.map((m, i) =>
         `<p><strong>${i + 1}º:</strong> ${m.musica} - ${m.estrelas} estrela(s)</p>`).join("")}
       `;
@@ -234,7 +233,7 @@
         backgroundColor: null
       }).then(canvas => {
         const link = document.createElement("a");
-        link.download = "resultado-votacao.png";
+        link.download = "Eternal-Sunshine-Night";
         link.href = canvas.toDataURL();
         link.click();
       });
